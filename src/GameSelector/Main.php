@@ -1,5 +1,10 @@
 <?php
-# GameSelector v0.3
+
+#GameSelector v0.4#test2 by EmreTr1
+#ItemCommands bug Fixed!
+#/gs setname command removed!
+#Now just ops can write setup commands
+
 namespace GameSelector;
 
 use pocketmine\plugin\PluginBase;
@@ -12,11 +17,13 @@ use pocketmine\inventory\InventoryType;
 use pocketmine\inventory\BaseTransaction;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\tile\Chest;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\math\Vector3;
+use pocketmine\level\particle\FloatingTextParticle;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
@@ -35,8 +42,9 @@ use pocketmine\utils\TextFormat as c;
 class Main extends PluginBase implements Listener{
 	
 	public $mode=0;
+        public $added=0;
 	public $name="";
-	public $prefix="§8[§dGame§aSelector§8]§r";
+	public $prefix="Â§8[Â§dGameÂ§aSelectorÂ§8]Â§r";
 	
 	public function OnEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -46,8 +54,12 @@ class Main extends PluginBase implements Listener{
 		$this->config->save();
 	}
 	
+        public function OnDisable(){
+            $this->getServer()->getLogger()->info($this->prefix.c::RED."GameSelector has been Disabled!");
+        }
 	public function OnCommand(CommandSender $s, Command $cmd, $label, array $args){
 		if(!isset($args[0])){unset($sender,$cmd,$label,$args);return false;};
+                if($s->isOp() and $s instanceof Player){
 		switch($args[0]){
 			case "add":
 			    if((!empty($args[1])) and !($this->config->getNested("Selectors.$args[1]"))){
@@ -60,55 +72,62 @@ class Main extends PluginBase implements Listener{
 				}
 				break;
 		    case "additem":
-			    if($this->config->getNested("Selectors.$args[1]") and (!empty($args[1])) and (!empty($args[2])) and (!empty($args[3])) and (!empty($args[4])) and $args[2]>=0){
-					$pos=$this->config->getNested("Selectors.$args[1]");
-					$x=$pos["x"];
-					$y=$pos["y"];
-					$z=$pos["z"];
-					$chest=$s->getLevel()->getTile(new Vector3($x, $y, $z));
-					$chest->getInventory()->addItem(Item::get($args[2], $args[3], $args[4]));
-					$chest->saveNBT();
-					$s->sendMessage($this->prefix.c::GOLD.$args[2]." ID's item was added from the ".$args[1]);
-				}else{
-					$s->sendMessage($this->prefix.c::YELLOW."Usage: /gs additem <SELECTORNAME> <Item ID> <damage> <count>");
-				}
-				break;
-		    case "setname":
-			    if($this->config->getNested("Selectors.$args[1]") and (!empty($args[1])) and (!empty($args[2]))){
-					$pos=$this->config->getNested("Selectors.$args[1]");
-					$x=$pos["x"];
-					$y=$pos["y"];
-					$z=$pos["z"];
-					$chest=$s->getLevel()->getTile(new Vector3($x, $y, $z));
-					$this->config->setNested("Selectors.$args[1].SelectorName", $args[2]);
-					$this->config->save();
-					$chest->setName($args[2]);
-					$chest->saveNBT();
-					$s->sendMessage($this->prefix.c::YELLOW.$args[1]."'s name was changed to ".$args[2]);
-				}else{
-					$s->sendMessage($this->prefix.c::YELLOW."Usage: /gs setname <Selectorname> <name>");
-				}
-				break;
-		    case "removeitem":
-			case "deleteitem":
-			case "delitem":
 			    if($this->config->getNested("Selectors.$args[1]") and (!empty($args[1])) and (!empty($args[2])) and $args[2]>=0){
 					$pos=$this->config->getNested("Selectors.$args[1]");
 					$x=$pos["x"];
 					$y=$pos["y"];
 					$z=$pos["z"];
 					$chest=$s->getLevel()->getTile(new Vector3($x, $y, $z));
-					$chest->getInventory()->removeItem(Item::get($args[2]));
+					$chest->getInventory()->addItem(Item::get($args[2], $args[3]));
+					$chest->saveNBT();
+					$s->sendMessage($this->prefix.c::GOLD.$args[2]." ID's item was added to ".$args[1]);
+				}else{
+					$s->sendMessage($this->prefix.c::YELLOW."Usage: /gs additem <SELECTORNAME> <Item ID> <damage>");
+				}
+				break;
+		        case "removeitem":
+			case "deleteitem":
+			case "delitem":
+			    if($this->config->getNested("Selectors.$args[1]") and (!empty($args[1])) and (!empty($args[3])) and (!empty($args[2])) and $args[2]>=0){
+					$pos=$this->config->getNested("Selectors.$args[1]");
+					$x=$pos["x"];
+					$y=$pos["y"];
+					$z=$pos["z"];
+					$chest=$s->getLevel()->getTile(new Vector3($x, $y, $z));
+					$chest->getInventory()->removeItem(Item::get($args[2]), $args[3]);
 					$chest->saveNBT();
 					$s->sendMessage($this->prefix.c::RED.$args[2]." ID's item was removed from the ".$args[1]);
 				}else{
-					$s->sendMessage($this->prefix.c::YELLOW."Usage: /gs additem <SELECTORNAME> <Item ID> <damage> <count>");
+					$s->sendMessage($this->prefix.c::YELLOW."Usage: /gs additem <SELECTORNAME> <Item ID> <damage>");
 				}
 				break;
-			case "setcommand":
-			    $s->sendMessage($this->prefix.c::RED."This section(ItemCommands) has not been completed! Coming soon...");
+			case "addcommand":
+			    if((!empty($args[1])) and (!empty($args[2])) and (!empty($args[3]))){
+                                if($s instanceof Player){
+                                    if($this->config->getNested("Selectors.$args[1]")){
+                                        $co=$this->config->getNested("Selectors.$args[1]");
+                                        $chest=$s->getLevel()->getTile(new Vector3($co["x"], $co["y"], $co["z"]));
+                                        $cn=$chest->getName();
+                                        $ag=$args[2];
+                                        if(isset($args[3]["/"])){
+                                            $s->sendMessage("Wrong command! No /");
+                                        }else{
+                                            array_shift($args);
+                                            array_shift($args);
+                                            array_shift($args);
+                                            $command = trim(implode(" ", $args));
+                                            $this->config->setNested("Selectors.$cn.Commands.$ag", $command);
+                                            $this->config->save();
+                                            $s->sendMessage($this->prefix."$cn :Added command to $ag ID item");
+                                        }
+                                    }
+                                }
+                            }
 				break;
-		}
+                        }
+		}else{
+                    $s->sendMessage(c::RED."You are not op!");
+                }
 	}
 	
 	public function OnDamage(EntityDamageEvent $event){
@@ -121,15 +140,16 @@ class Main extends PluginBase implements Listener{
 			        $y=round($entity->getY() - 3);
 			        $z=round($entity->getZ());
 					$player->getLevel()->setBlock(new Vector3($x, $y, $z), Block::get(54));
-                    $chest = new Chest($player->getLevel()->getChunk($x >> 4, $z >> 4, true), new CompoundTag(false, array(new IntTag("x", $x), new IntTag("y", $y), new IntTag("z", $z), new StringTag($this->name))));
+                    $chest = new Chest($player->getLevel()->getChunk($x >> 4, $z >> 4, true), new CompoundTag(false, array(new IntTag("x", $x), new IntTag("y", $y), new IntTag("z", $z), new StringTag("id", Tile::CHEST))));
 					$chest->setName($this->name);
+                                        $chest->saveNBT();
 			        $player->getLevel()->addTile($chest);
 				   $chest2=new ChestInventory($player->getLevel()->getTile(new Vector3($x, $y, $z)), $player);
 				   $ch=$player->getLevel()->getTile(new Vector3($x, $y, $z));
 				   $n=$this->name;
 				   $ch->saveNBT();
 				   $level=$player->getLevel()->getFolderName();
-				   $this->config->setNested("Selectors.$n", ["x"=>$x, "y"=>$y, "z"=>$z, "level"=>$level, "Items"=>new ListTag("Items",$ch->getInventory()), "SelectorName"=>$n]);
+				   $this->config->setNested("Selectors.$n", ["x"=>$x, "y"=>$y, "z"=>$z, "level"=>$level, "Items"=>new ListTag("Items",$ch->getInventory()), "SelectorName"=>$n, "FloatingText"=>false, "FloatingTextName"=>$n]);
 				   $this->config->setAll($this->config->getAll());
 				   $this->config->save();
 				   $player->sendMessage($this->prefix.c::GRAY."Entity Selected!");
@@ -138,9 +158,15 @@ class Main extends PluginBase implements Listener{
 			$x=round($entity->getX());
 			        $y=round($entity->getY() - 3);
 			        $z=round($entity->getZ());
-			if($player->getLevel()->getTile(new Vector3($x, $y, $z))){
+                                $chest=$player->getLevel()->getTile(new Vector3($x, $y, $z));
+                                $cn=$chest->getName();
+			if($player->getLevel()->getTile(new Vector3($x, $y, $z)) and $this->config->getNested("Selectors.$cn")){
 				$event->setCancelled(true);
-				$chest=$player->getLevel()->getTile(new Vector3($x, $y, $z));
+                                $fname=$this->config->getNested("Selectors.$cn.FloatingTextName");
+                                if($this->config->getNested("Selectors.$cn.FloatingText", true)){
+                                    $entity->setNameTag($cn);
+                                    $entity->saveNBT();
+                                }
 				$player->addWindow($chest->getInventory());
 			}
 		}
@@ -154,7 +180,7 @@ class Main extends PluginBase implements Listener{
 		foreach ($Transaction->getInventories() as $inv) {
 			if ($inv instanceof PlayerInventory)
 				$Player = $inv->getHolder();
-			elseif (($inv instanceof BuyingInventory) || ($inv instanceof ChestInventory))
+			elseif($inv instanceof ChestInventory)
 				$chest = $inv->getHolder();
 		}
 		foreach ($Transaction->getTransactions() as $t) {
@@ -163,10 +189,18 @@ class Main extends PluginBase implements Listener{
 		}
 		$SourceItem = $added[0]->getSourceItem();
 		$TargetItem = $added[0]->getTargetItem();
-		if($this->config->getAll()[$chest->getName()] and $SourceItem->getId()>=0){
-			$Player->sendMessage($this->prefix.c::RED."This section(ItemCommands) has not been completed! Coming soon...");
-			$event->setCancelled(true);
-		}
+                $name=$chest->getName();
+                $TargetItemid = $TargetItem->getId();
+                $SourceItemid= $SourceItem->getId();
+                if($this->config->getNested("Selectors.$name.Commands.$TargetItemid") and $TargetItem->getId()>=0){
+                    $event->setCancelled(true);
+                    $playername=$Player->getName();
+                    $command=$this->config->getNested("Selectors.$name.Commands.$TargetItemid");
+                    $this->getServer()->dispatchCommand(new ConsoleCommandSender(), str_ireplace("{player}", $playername, $command));
+                }
+                if($this->config->getNested("Selectors.$name.Commands.$SourceItemid") and $SourceItem->getId()>=0){
+                    $event->setCancelled(true);
+                }
 	}
 	
 	public function traderInvTransaction($t)
