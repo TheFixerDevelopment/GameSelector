@@ -1,39 +1,42 @@
-# GAME SELECTOR
+#GAME SELECTOR
 
 ----------------------------------------------------------------------------------------------------------
-thanks to this plugin you can add a creature to the crate. clicking that opens the chest of the creature and living things. My goal: to be able to look the outdoor games by adding it within the objects commands to it from here. Like MinePlex
+Add chest screen to entity and add items, commands to chest screen!
+- Thanks for downloading.
+----------------------------------------------------------------------------------------------------------
 
-Sorry, bad english :D
+=> Current Version: #Stable
+
+Languages:
+- English
+
+Source Code:
+Github: https://github.com/EmreTr1/GameSelector
 
 Commands:
 - /gs add
 - /gs additem
 - /gs removeitem
-- /gs setcommand (not work now)
-- /gs setname
+- /gs addcommand
 
-How to use this plugin?
+How to use this Plugin?
 
-- 1. first, write this command "/gs add <name>"
-- 2. then touch the a entity(player, slapper, mobs...)
-- 3.and now you created a entity's inventory, click the entity and open the entity inventory
-- 4.You can add and remove item in the entity's inventory(/gs additem <selectorname> <itemid> <damage> <count> , /gs removeitem <selectorname> <itemid> <damage> <count>)
-- 5.You can change the entity's inventory name(/gs setname <selectorname> <newname>
-- 6.You can add command the items(not work now)
+1. first, write this command "/gs add <name>"
+2. then touch the a entity(player, slapper, mobs...)
+3.and now you created a entity's inventory, quit game and join game ,click the entity and open the entity inventory
+4.You can add and remove item in the entity's inventory(/gs additem <selectorname> <itemid> <damage> , /gs removeitem <selectorname> <itemid> <damage>)
+5.You can add command the items(/gs addcommand <SELECTORNAME> <ITEMID> <COMMAND [*if you want to add the name of the player, write this = {player} ]>)
+
+*It is entered via the command console
 
 Bugs?
 Please report bugs!
 
-[NEW] Version 0.3[dev]
-New Features:
-- Language Changed(turkish->english)
-- Prefix color changed.
-- Some bugs Fixed!
-
-development by EmreTr1
+#Stable Version is Out!
+Go to: https://forums.imagicalmine.net/plugins/gameselector.279/updates
 
 More minigame, that can be used in the field of!
------------------------------------------------------------------------------------------------------------ 
+----------------------------------------------------------------------------------------------------------
 
 # Phar file?
 
