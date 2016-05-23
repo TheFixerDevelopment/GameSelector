@@ -189,8 +189,9 @@ class Main extends PluginBase implements Listener{
 			foreach ($this->traderInvTransaction($t) as $nt)
 				$added [] = $nt;
 		}
-		$SourceItem = $added[0]->getSourceItem();
-		$TargetItem = $added[0]->getTargetItem();
+		foreach ($added as $item) {
+			$SourceItem = $item->getSourceItem();
+			$TargetItem = $item->getTargetItem();
                 $name=$chest->getName();
                 $TargetItemid = $TargetItem->getId();
                 $SourceItemid= $SourceItem->getId();
@@ -203,6 +204,8 @@ class Main extends PluginBase implements Listener{
                 if($this->config->getNested("Selectors.$name.Commands.$SourceItemid") and $SourceItem->getId()>=0){
                     $event->setCancelled(true);
                 }
+		}
+		
 	}
 	
 	public function traderInvTransaction($t)
