@@ -158,9 +158,10 @@ class Main extends PluginBase implements Listener{
 			$x=round($entity->getX());
 			        $y=round($entity->getY() - 3);
 			        $z=round($entity->getZ());
-                                $chest=$player->getLevel()->getTile(new Vector3($x, $y, $z));
+			if($player->getLevel()->getTile(new Vector3($x, $y, $z))){
+				$chest=$player->getLevel()->getTile(new Vector3($x, $y, $z));
                                 $cn=$chest->getName();
-			if($player->getLevel()->getTile(new Vector3($x, $y, $z)) and $this->config->getNested("Selectors.$cn")){
+				if($this->config->getNested("Selectors.$cn")){
 				$event->setCancelled(true);
                                 $fname=$this->config->getNested("Selectors.$cn.FloatingTextName");
                                 if($this->config->getNested("Selectors.$cn.FloatingText", true)){
@@ -169,6 +170,7 @@ class Main extends PluginBase implements Listener{
                                 }
 				$player->addWindow($chest->getInventory());
 			}
+	             }
 		}
 	}
 	
