@@ -178,12 +178,12 @@ class Main extends PluginBase implements Listener{
 		$Transaction = $event->getTransaction();
 		$Player = null;
 		$BuyingTile = null;
-		$chest = null;
+		$name = null;
 		foreach ($Transaction->getInventories() as $inv) {
 			if ($inv instanceof PlayerInventory)
 				$Player = $inv->getHolder();
 			elseif($inv instanceof ChestInventory)
-				$chest = $inv->getHolder();
+				$name = $inv->getHolder()->getName();
 		}
 		foreach ($Transaction->getTransactions() as $t) {
 			foreach ($this->traderInvTransaction($t) as $nt)
@@ -192,7 +192,6 @@ class Main extends PluginBase implements Listener{
 		foreach ($added as $item) {
 			$SourceItem = $item->getSourceItem();
 			$TargetItem = $item->getTargetItem();
-                $name=$chest->getName();
                 $TargetItemid = $TargetItem->getId();
                 $SourceItemid= $SourceItem->getId();
                 if($this->config->getNested("Selectors.$name.Commands.$TargetItemid") and $TargetItem->getId()>=0){
