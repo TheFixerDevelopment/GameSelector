@@ -1,9 +1,8 @@
 <?php
 
-#GameSelector v0.4#test2 by EmreTr1
-#ItemCommands bug Fixed!
-#/gs setname command removed!
-#Now just ops can write setup commands
+#GameSelector #Stable3 by EmreTr1
+#Added addcommand command usage!
+#Prefix bug fixed(Â)!
 
 namespace GameSelector;
 
@@ -44,7 +43,7 @@ class Main extends PluginBase implements Listener{
 	public $mode=0;
         public $added=0;
 	public $name="";
-	public $prefix="Â§8[Â§dGameÂ§aSelectorÂ§8]Â§r";
+	public $prefix="§8[§dGame§aSelector§8]§r";
 	
 	public function OnEnable(){
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -122,7 +121,9 @@ class Main extends PluginBase implements Listener{
                                         }
                                     }
                                 }
-                            }
+                            }else{
+								$s->sendMessage($this->prefix.c::YELLOW."Usage: /gs addcommand <SELECTORNAME> <Item ID> <Command(No /)>");
+							}
 				break;
                         }
 		}else{
