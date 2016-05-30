@@ -1,7 +1,7 @@
 #name, main, version and api are required
 name: GameSelector
 main: GameSelector\Main
-version: #Stable
+version: #Stable3
 api: 1.13.1
 author: EmreTr1
 description: GameSelector 
