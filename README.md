@@ -5,7 +5,7 @@ Add chest screen to entity and add items, commands to chest screen!
 - Thanks for downloading.
 ----------------------------------------------------------------------------------------------------------
 
-=> Current Version: #Stable
+=> Current Version: #Stable3
 
 Languages:
 - English
@@ -32,7 +32,7 @@ How to use this Plugin?
 Bugs?
 Please report bugs!
 
-#Stable Version is Out!
+#Stable3 Version is Out!
 Go to: https://forums.imagicalmine.net/plugins/gameselector.279/updates
 
 More minigame, that can be used in the field of!
