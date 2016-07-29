@@ -287,7 +287,7 @@ class WaitTask extends PluginTask{
             if($this->time==0){
                 $command=$this->command;
                 $playername=$this->player;
-                $this->main->getServer()->dispatchCommand(new ConsoleCommandSender(), str_ireplace("{player}", $playername, $command));
+                $this->main->getServer()->dispatchCommand($p, $command));
                 $this->main->getServer()->getScheduler()->cancelTask($this->getTaskId());
             }
         }
