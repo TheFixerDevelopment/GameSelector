@@ -173,7 +173,7 @@ class Main extends PluginBase implements Listener{
 			        $y=round($entity->getY() - 3);
 			        $z=round($entity->getZ());
 					$player->getLevel()->setBlock(new Vector3($x, $y, $z), Block::get(54));
-                    $chest = new Chest($player->getLevel()->getChunk($x >> 4, $z >> 4, true), new CompoundTag(false, array(new IntTag("x", $x), new IntTag("y", $y), new IntTag("z", $z), new StringTag("id", Tile::CHEST))));
+                    $chest = new Chest($player->getLevel(), new CompoundTag(false, array(new IntTag("x", $x), new IntTag("y", $y), new IntTag("z", $z), new StringTag("id", Tile::CHEST))));
 					$chest->setName($this->name);
                     $chest->saveNBT();
 			        $player->getLevel()->addTile($chest);
